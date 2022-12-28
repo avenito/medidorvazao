@@ -5,17 +5,37 @@
 
 WebServer server(80);
 
-uint8_t LED1pin = 4;
+uint8_t LED1pin = 15;
 bool LED1status = LOW;
 
 uint8_t LED2pin = 5;
 bool LED2status = LOW;
+
+//Define as variáveis e as inicia com valor zero
+float vazao;
+float media = 0; 
+float acumulado = 0;
+int contaPulso = 0; 
+int i = 0; 
+int Min = 00; 
+float Litros = 0;
+float MiliLitros = 0;
+
+long int t1;
+
+uint8_t Pin_PulsoMedidor = 2;
+uint8_t Saida_Simulacao = 4;
 
 void setup() {
   Serial.begin(115200);
   pinMode(LED1pin, OUTPUT);
   pinMode(LED2pin, OUTPUT);
 
+  // Medidor de vazao
+  pinMode(Pin_PulsoMedidor, INPUT);
+  pinMode(Saida_Simulacao, OUTPUT);
+  attachInterrupt(Pin_PulsoMedidor, incpulso, RISING);
+  
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   
@@ -39,6 +59,11 @@ void setup() {
   
   server.begin();
   Serial.println("HTTP server started");
+
+  Serial.println("\n\nInício da medição\n\n");
+  sei(); // Inicializa interrupcao
+  t1 = millis(); // inicializa tempo
+  
 }
 void loop() {
   server.handleClient();
@@ -51,6 +76,29 @@ void loop() {
   {digitalWrite(LED2pin, HIGH);}
   else
   {digitalWrite(LED2pin, LOW);}
+
+  // Medidor de vazao
+  // Verifica se passou 1 seg pra pegar os valores medidos
+  if ((millis() - t1) > 1000 ){
+    t1 = millis();
+    vazao = contaPulso / 5.5;
+    contaPulso = 0;
+    acumulado = acumulado + vazao/60;
+    Serial.print("Vazao: ");
+    Serial.print(vazao);
+    Serial.print(" l/min  --  ");
+    Serial.print("Acumulado: ");
+    Serial.print(acumulado);
+    Serial.println(" l");
+  }
+
+  // Simulacao de pulsos  
+  // contaPulso++;
+  if (Saida_Simulacao = HIGH) {
+    digitalWrite(Saida_Simulacao, LOW);
+  } else {
+    digitalWrite(Saida_Simulacao, HIGH);
+  }
 }
 
 void handle_OnConnect() {
@@ -119,4 +167,10 @@ String SendHTML(uint8_t led1stat,uint8_t led2stat){
   ptr +="</body>\n";
   ptr +="</html>\n";
   return ptr;
+}
+
+// Conta os pulsos
+void incpulso ()
+{
+ contaPulso++;
 }
