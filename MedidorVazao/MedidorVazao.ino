@@ -8,6 +8,9 @@ WebServer server(80);
 uint8_t LED1pin = 15;
 bool LED1status = LOW;
 
+const float CONST_VAZAO = 5.5;
+const int TEMPO_MEDICAO = 3000; // em milisegundos
+
 uint8_t LED2pin = 5;
 bool LED2status = LOW;
 
@@ -79,9 +82,9 @@ void loop() {
 
   // Medidor de vazao
   // Verifica se passou 1 seg pra pegar os valores medidos
-  if ((millis() - t1) > 1000 ){
+  if ((millis() - t1) > TEMPO_MEDICAO ){
     t1 = millis();
-    vazao = contaPulso / 5.5;
+    vazao = contaPulso / CONST_VAZAO;
     contaPulso = 0;
     acumulado = acumulado + vazao/60;
     Serial.print("Vazao: ");
@@ -93,12 +96,12 @@ void loop() {
   }
 
   // Simulacao de pulsos  
-  // contaPulso++;
-  if (Saida_Simulacao = HIGH) {
+  contaPulso++;
+  /*if (Saida_Simulacao = HIGH) {
     digitalWrite(Saida_Simulacao, LOW);
   } else {
     digitalWrite(Saida_Simulacao, HIGH);
-  }
+  }*/
 }
 
 void handle_OnConnect() {
