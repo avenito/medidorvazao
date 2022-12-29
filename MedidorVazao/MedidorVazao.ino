@@ -36,9 +36,9 @@ void setup() {
   pinMode(LED2pin, OUTPUT);
 
   // Medidor de vazao
-  pinMode(Pin_PulsoMedidor, INPUT);
+  pinMode(Pin_PulsoMedidor, INPUT_PULLUP);
   pinMode(Saida_Simulacao, OUTPUT);
-  attachInterrupt(Pin_PulsoMedidor, incpulso, RISING);
+  attachInterrupt(digitalPinToInterrupt(Pin_PulsoMedidor), incpulso, RISING);
   
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
