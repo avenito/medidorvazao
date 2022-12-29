@@ -6,27 +6,19 @@
 WebServer server(80);
 
 const float CONST_VAZAO = 5.5;
-const float TEMPO_MEDICAO = 3000; // em milisegundos
+const float TEMPO_MEDICAO = 2000; // em milisegundos
 
 //Define as variáveis e as inicia com valor zero
 float vazao;
 float acumulado = 0;
-int contaPulso = 0; 
-int i = 0; 
-int Min = 00; 
-float Litros = 0;
-float MiliLitros = 0;
-
-long int t1, tt;
-
+int   contaPulso = 0; 
+unsigned long int t1, tt;
 uint8_t Pin_PulsoMedidor = 4;
-uint8_t Saida_Simulacao = 14;
 
 // Conta os pulsos
 void IRAM_ATTR incpulso ()
 {
- contaPulso++;
- //Serial.println("..int..");
+  contaPulso++;  
 }
 
 void setup() {
@@ -34,7 +26,6 @@ void setup() {
 
   // Medidor de vazao
   pinMode(Pin_PulsoMedidor, INPUT_PULLUP);
-  pinMode(Saida_Simulacao, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(Pin_PulsoMedidor), incpulso, RISING);
   
   WiFi.mode(WIFI_STA);
@@ -59,23 +50,27 @@ void setup() {
 
   Serial.println("\n\nInício da medição\n\n");
   Serial.println(digitalPinToInterrupt(Pin_PulsoMedidor));
-  //sei(); // Inicializa interrupcao
   t1 = millis(); // inicializa tempo
+  contaPulso = 0; // zera contador
   
 }
 void loop() {
   server.handleClient();
-
+  
   // Medidor de vazao
   // Verifica se passou 1 seg pra pegar os valores medidos
   tt = (millis() - t1);  
   if ( tt > TEMPO_MEDICAO ){
-    //detachInterrupt(digitalPinToInterrupt(Pin_PulsoMedidor));
+    /* 
+    Serial.print(totalTime);
+    Serial.print(" -- ");
     Serial.print(contaPulso);
     Serial.print(" -- ");
+    Serial.print(tt);
+    Serial.print(" -- ");
+    */
     vazao = ((TEMPO_MEDICAO/tt)*contaPulso) / CONST_VAZAO;
     contaPulso = 0;
-    //attachInterrupt(digitalPinToInterrupt(Pin_PulsoMedidor), incpulso, FALLING);
     t1 = millis();
     acumulado = acumulado + vazao/60;
     Serial.print("Vazao: ");
@@ -85,26 +80,18 @@ void loop() {
     Serial.print(acumulado);
     Serial.println(" l");
   }
-
-  // Simulacao de pulsos  
-  // contaPulso++;
-  if (digitalRead(Saida_Simulacao) == HIGH) {
-    digitalWrite(Saida_Simulacao, LOW);
-  } else {
-    digitalWrite(Saida_Simulacao, HIGH);
-  }
 }
 
 void handle_OnConnect() {
   Serial.println("Connection ...");
-  server.send(200, "text/html", SendHTML(vazao, acumulado)); 
+  server.send(200, "text/html", SendHTML()); 
 }
 
 void handle_NotFound(){
   server.send(404, "text/plain", "Not found");
 }
 
-String SendHTML(float vazao_gui, float acumulado_gui){
+String SendHTML(void){
   String ptr = "<!DOCTYPE html> <html>\n";
   ptr +="<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
   ptr +="<title>Medidor de Vaz&atilde;o</title>\n";
@@ -123,11 +110,11 @@ String SendHTML(float vazao_gui, float acumulado_gui){
   ptr +="<h1>Medidor de Vaz&atilde;o</h1>\n";
   
   ptr +="<h3><p>Vaz&atilde;o: ";
-  ptr +=String(vazao_gui);
+  ptr +=String(vazao);
   ptr +=" l/min<h3><p>";
 
   ptr +="<h3><p>Acumulado: ";
-  ptr +=String(acumulado_gui);
+  ptr +=String(acumulado);
   ptr +=" l<p><h3>";
 
   ptr +="</body>\n";
