@@ -97,25 +97,27 @@ String SendHTML(void){
   ptr +="<title>Medidor de Vaz&atilde;o</title>\n";
   ptr +="<meta http-equiv=\"refresh\" content=\"5\">\n";
   ptr +="<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
-  ptr +="body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}\n";
+  ptr +="table{font-family: arial, sans-serif;border-collapse:collapse;width: 75%;}td,th{border: 1px solid #dddddd;text-align:left;padding:8px;}tr:nth-child(even){background-color:#dddddd;}\n";
+  ptr +="body{margin-top: 50px;} h2 {color: #4233FF;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}\n";
   ptr +=".button {display: block;width: 80px;background-color: #3498db;border: none;color: white;padding: 13px 30px;text-decoration: none;font-size: 25px;margin: 0px auto 35px;cursor: pointer;border-radius: 4px;}\n";
   ptr +=".button-on {background-color: #3498db;}\n";
   ptr +=".button-on:active {background-color: #2980b9;}\n";
   ptr +=".button-off {background-color: #34495e;}\n";
   ptr +=".button-off:active {background-color: #2c3e50;}\n";
-  ptr +="p {font-size: 14px;color: #888;margin-bottom: 10px;}\n";
+  ptr +=".center{margin-left:auto;margin-right:auto;}\n";
+  ptr +="p {font-size: 14px;color: #999;margin-bottom: 10px;}\n";
   ptr +="</style>\n";
   ptr +="</head>\n";
   ptr +="<body>\n";
-  ptr +="<h1>Medidor de Vaz&atilde;o</h1>\n";
+  ptr +="<h2>Medidor de Vaz&atilde;o</h2>\n";
   
-  ptr +="<h3><p>Vaz&atilde;o: ";
+  ptr +="<table class=\"center\"><tr><td>Vaz&atilde;o</td><td>";
   ptr +=String(vazao);
-  ptr +=" l/min<h3><p>";
+  ptr +=" l/min</td></tr>";
 
-  ptr +="<h3><p>Acumulado: ";
+  ptr +="<tr><td>Acumulado</td><td>";
   ptr +=String(acumulado);
-  ptr +=" l<p><h3>";
+  ptr +=" l</td></tr></table>";
 
   ptr +="</body>\n";
   ptr +="</html>\n";
