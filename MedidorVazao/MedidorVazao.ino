@@ -8,6 +8,8 @@ WebServer server(80);
 const float CONST_VAZAO = 5.7;
 const float TEMPO_MEDICAO = 2000; // em milisegundos
 
+// Esse é o branch IP Fixo
+
 //Define as variáveis e as inicia com valor zero
 float vazao;
 float acumulado = 0;
