@@ -5,7 +5,7 @@
 
 WebServer server(80);
 
-const float CONST_VAZAO = 5.5;
+const float CONST_VAZAO = 5.7;
 const float TEMPO_MEDICAO = 2000; // em milisegundos
 
 //Define as variáveis e as inicia com valor zero
