@@ -30,9 +30,16 @@ void setup() {
   pinMode(Pin_PulsoMedidor, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(Pin_PulsoMedidor), incpulso, RISING);
   
+  IPAddress ip(192,168,0,163);
+  IPAddress gateway(192,168,0,1);
+  IPAddress subnet(255,255,255,0);
+  IPAddress dns(8,8,8,8);
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   
+  WiFi.config(ip, gateway, subnet, dns); //implementado para IP FIXO//
+
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -63,14 +70,14 @@ void loop() {
   // Verifica se passou 1 seg pra pegar os valores medidos
   tt = (millis() - t1);  
   if ( tt > TEMPO_MEDICAO ){
-    /* 
+   /*
     Serial.print(totalTime);
     Serial.print(" -- ");
     Serial.print(contaPulso);
     Serial.print(" -- ");
     Serial.print(tt);
     Serial.print(" -- ");
-    */
+  */
     vazao = ((TEMPO_MEDICAO/tt)*contaPulso) / CONST_VAZAO;
     contaPulso = 0;
     t1 = millis();
