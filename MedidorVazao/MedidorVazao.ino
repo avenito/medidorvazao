@@ -28,13 +28,14 @@ int currentYear;
 float vazao;
 float acumulado = 0;
 int   contaPulso = 0; 
-unsigned long int t1, tt;
+unsigned long int t1, tt, numeroPulsos;
 uint8_t Pin_PulsoMedidor = 4;
 
 /* Rotina pra contar os pulsos */
 void IRAM_ATTR incpulso ()
 {
-  contaPulso++;  
+  contaPulso++;
+  numeroPulsos++;
 }
 
 void setup() {
@@ -79,7 +80,8 @@ void setup() {
   Serial.print("Pino de entrada do sinal do medidor: ");
   Serial.println(digitalPinToInterrupt(Pin_PulsoMedidor));
   t1 = millis(); // inicializa tempo
-  contaPulso = 0; // zera contador
+  contaPulso = 0; // zera contadores
+  numeroPulsos = 0;
   
 }
 void loop() {
@@ -130,7 +132,8 @@ void loop() {
     Serial.print(" l/min  --  ");
     Serial.print("Acumulado: ");
     Serial.print(acumulado);
-    Serial.println(" l");
+    Serial.print(" l - Total de pulsos: ");
+    Serial.println(numeroPulsos);
   }
 }
 
