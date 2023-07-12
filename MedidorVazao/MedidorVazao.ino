@@ -11,7 +11,7 @@
 WebServer server(80);
 
 /* Definimos a constante e o tempo entre leituras. A constante de vazao pode ir pro Localconfig.h no futuro */
-const float CONST_VAZAO = 6.6;
+const float CONST_VAZAO = 2.5;
 const float TEMPO_MEDICAO = 2000; // em milisegundos
 
 /* Cria as variáveis e as definicoes inicias para que o NTP (relógio) funcione */
