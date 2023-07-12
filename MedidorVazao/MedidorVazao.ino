@@ -17,7 +17,7 @@ const float TEMPO_MEDICAO = 2000; // em milisegundos
 /* Cria as variáveis e as definicoes inicias para que o NTP (relógio) funcione */
 WiFiUDP udp;
 NTPClient ntp(udp, "a.st1.ntp.br", -3 * 3600, 60000);/* Cria um objeto "NTP" com as configurações.utilizada no Brasil */
-String hora, currentDate;
+String hora, currentDate, currentMonthStr;
 time_t epochTime;
 struct tm *ptm; 
 int monthDay;
@@ -112,9 +112,13 @@ void loop() {
     monthDay = ptm->tm_mday;
     currentMonth = ptm->tm_mon+1;
     currentYear = ptm->tm_year+1900;
-
+    /* Formata o mes pra ficar com dois digitos */
+    currentMonthStr = String(currentMonth);
+    if(currentMonthStr.length() == 1){    /* <--- essa linha verifica a quantidade de digitos do mes. De 1 a 9 tem somente um digito */
+      currentMonthStr = "0" + currentMonthStr; /* <--- se tiver só um digito, essa linha coloca o "0" na frente */
+    }
     /* Colocamos na variáel currentDate, o formato que queremos da data, dia/mes/ano */
-    currentDate = String(monthDay) + "/" + String(currentMonth) + "/" +  String(currentYear);
+    currentDate = String(monthDay) + "/" + currentMonthStr + "/" +  String(currentYear);
 
     /* Calculamos a vazao */
     vazao = ((TEMPO_MEDICAO/tt)*contaPulso) / CONST_VAZAO;
@@ -123,17 +127,19 @@ void loop() {
     /* Somamos a vazao ao valor acumulado, assim temos o volume total do que passou no medidor */
     acumulado = acumulado + vazao/60;
     
-    /* Imprimimos pelo Monitor Serial a data, hora, azao e acumulado */    
-    Serial.print(currentDate);
-    Serial.print(" - ");
-    Serial.print(hora);
-    Serial.print(" - Vazao: ");
-    Serial.print(vazao);
-    Serial.print(" l/min  --  ");
-    Serial.print("Acumulado: ");
-    Serial.print(acumulado);
-    Serial.print(" l - Total de pulsos: ");
-    Serial.println(numeroPulsos);
+    /* Imprimimos pelo Monitor Serial a data, hora, azao e acumulado, somente se vazao diferente de zero */    
+    if(vazao > 0){
+      Serial.print(currentDate);
+      Serial.print(" - ");
+      Serial.print(hora);
+      Serial.print(" - Vazao: ");
+      Serial.print(vazao);
+      Serial.print(" l/min  --  ");
+      Serial.print("Acumulado: ");
+      Serial.print(acumulado);
+      Serial.print(" l - Total de pulsos: ");
+      Serial.println(numeroPulsos);
+    }
   }
 }
 
@@ -170,7 +176,15 @@ String SendHTML(void){
   ptr +="<body>\n";
   ptr +="<h2>Medidor de Vaz&atilde;o</h2>\n";
   
-  ptr +="<table class=\"center\"><tr><td>Vaz&atilde;o</td><td>";
+  ptr +="<table class=\"center\"><tr><td>Data</td><td>";
+  ptr +=currentDate;
+  ptr +="</td></tr>";
+
+  ptr +="<tr><td>Hora</td><td>";
+  ptr +=hora;
+  ptr +="</td></tr>";
+
+  ptr +="<tr><td>Vaz&atilde;o</td><td>";
   ptr +=String(vazao);
   ptr +=" l/min</td></tr>";
 
